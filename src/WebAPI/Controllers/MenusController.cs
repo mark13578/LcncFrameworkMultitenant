@@ -17,13 +17,81 @@ namespace WebAPI.Controllers
             _unitOfWork = unitOfWork;
         }
 
+
+        // GET: api/menus
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<MenuDto>>> GetMenus()
+        //{
+        //    var tenantId = GetTenantId();
+        //    var menuItems = await _unitOfWork.MenuItems.GetAllByTenantAsync(tenantId);
+
+        //    var dtos = menuItems.Select(m => new MenuDto
+        //    {
+        //        Id = m.Id,
+        //        Name = m.Name,
+        //        ParentId = m.ParentId,
+        //        Icon = m.Icon,
+        //        Path = m.Path,
+        //        SortOrder = m.SortOrder
+        //    }).ToList();
+
+        //    var tree = dtos.Where(d => d.ParentId == null).OrderBy(d => d.SortOrder).ToList();
+        //    tree.ForEach(d => AddChildren(d, dtos));
+
+        //    return Ok(tree);
+        //}
+
+        /// <summary>
+        /// 20250731更新 api/menus 加入權限控制
+        /// </summary>
+        /// <returns></returns>
         // GET: api/menus
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MenuDto>>> GetMenus()
         {
             var tenantId = GetTenantId();
+            var userId = GetCurrentUserId();
+
+            var user = await _unitOfWork.Users.GetByIdWithDetailsAsync(userId);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var roleIds = user.UserRoles.Select(ur => ur.RoleId).ToList();
+
+            // 如果使用者沒有任何角色，直接回傳空選單
+            if (!roleIds.Any())
+            {
+                return Ok(new List<MenuDto>());
+            }
+
+            var allowedMenuItems = await _unitOfWork.MenuItems.GetAllowedByRoleIdsAsync(tenantId, roleIds);
+
+            var dtos = allowedMenuItems.Select(m => new MenuDto
+            {
+                Id = m.Id,
+                Name = m.Name,
+                ParentId = m.ParentId,
+                Icon = m.Icon,
+                Path = m.Path,
+                SortOrder = m.SortOrder
+            }).ToList();
+
+            var tree = dtos.Where(d => d.ParentId == null).OrderBy(d => d.SortOrder).ToList();
+            tree.ForEach(d => AddChildren(d, dtos));
+
+            return Ok(tree);
+        }
+
+        // ↓↓ 新增這個 API 端點 ↓↓
+        // GET: api/menus/all-for-management (給角色管理頁面使用，回傳所有選單)
+        [HttpGet("all-for-management")]
+        public async Task<ActionResult<IEnumerable<MenuDto>>> GetAllForManagement()
+        {
+            var tenantId = GetTenantId();
             var menuItems = await _unitOfWork.MenuItems.GetAllByTenantAsync(tenantId);
 
+            // ↓↓ 修正點：補全這裡的物件初始化 ↓↓
             var dtos = menuItems.Select(m => new MenuDto
             {
                 Id = m.Id,
@@ -64,6 +132,8 @@ namespace WebAPI.Controllers
             await _unitOfWork.MenuItems.AddAsync(menuItem);
             await _unitOfWork.CompleteAsync();
 
+            // 修正點：補全這裡的物件初始化 ↓↓
+            var resultDto = MapToDto(menuItem);
             return Ok(menuItem);
         }
 
@@ -116,6 +186,19 @@ namespace WebAPI.Controllers
             await _unitOfWork.CompleteAsync();
 
             return NoContent(); // HTTP 204
+        }
+
+        private MenuDto MapToDto(MenuItem menuItem)
+        {
+            return new MenuDto
+            {
+                Id = menuItem.Id,
+                Name = menuItem.Name,
+                ParentId = menuItem.ParentId,
+                Icon = menuItem.Icon,
+                Path = menuItem.Path,
+                SortOrder = menuItem.SortOrder
+            };
         }
     }
 }

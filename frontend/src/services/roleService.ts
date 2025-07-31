@@ -36,6 +36,17 @@ class RoleService {
   async deleteRole(id: string): Promise<void> {
     await api.delete(`/roles/${id}`);
   }
+
+    // 根據角色 ID 獲取其擁有的所有 MenuItem ID 列表
+    async getMenuPermissions(roleId: string): Promise<string[]> {
+      const response = await api.get<string[]>(`/roles/${roleId}/menu-permissions`);
+      return response.data;
+    }
+  
+    // 更新某個角色的選單權限
+    async updateMenuPermissions(roleId: string, menuItemIds: string[]): Promise<void> {
+      await api.put(`/roles/${roleId}/menu-permissions`, menuItemIds);
+    }
 }
 
 export default new RoleService();

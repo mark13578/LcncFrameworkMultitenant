@@ -23,8 +23,15 @@ export interface MenuInput {
 
 class MenuService {
   // 獲取所有選單項目 (樹狀結構)
+  // 給主佈局使用，會根據權限過濾
   async getMenus(): Promise<MenuItem[]> {
     const response = await api.get<MenuItem[]>('/menus');
+    return response.data;
+  }
+
+  // 新增給權限管理頁面使用，獲取所有選單
+  async getAllMenusForManagement(): Promise<MenuItem[]> {
+    const response = await api.get<MenuItem[]>('/menus/all-for-management');
     return response.data;
   }
 

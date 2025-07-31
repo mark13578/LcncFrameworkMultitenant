@@ -11,6 +11,25 @@ import axios from 'axios';
 import IconMapper from '../components/IconMapper';
 import { availableIcons } from '../utils/iconUtils'; // <-- 修正點：從新的路徑引用
 
+import { MenuItem as MuiMenuItem } from '@mui/material'; // 從 MUI 引用 MenuItem
+
+
+// 遞迴元件，用於在 Select 中產生帶有縮排的選項
+const RecursiveMenuItem = ({ item, depth }: { item: MenuItemType; depth: number }) => {
+  const paddingLeft = `${depth * 20}px`; // 每一層縮排 20px
+  return (
+    <>
+      <MuiMenuItem key={item.id} value={item.id} style={{ paddingLeft }}>
+        {item.name}
+      </MuiMenuItem>
+      {item.children && item.children.map(child => (
+        <RecursiveMenuItem key={child.id} item={child} depth={depth + 1} />
+      ))}
+    </>
+  );
+};
+
+
 const findMenuItemById = (nodes: MenuItemType[], id: string): MenuItemType | null => {
     for (const node of nodes) {
         if (node.id === id) return node;
@@ -67,8 +86,8 @@ const MenuManagementPage = () => {
 
   const handleSave = async () => {
     try {
-      if (!currentItem.name || !currentItem.path) {
-        alert('選單名稱和路徑為必填項。');
+      if (!currentItem.name ) {
+        alert('選單名稱為必填項。');
         return;
       }
       const inputData: MenuInput = { 
@@ -135,13 +154,29 @@ const MenuManagementPage = () => {
         sx={{ flexGrow: 1, overflowY: 'auto' }}
       />
 
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{currentItem.id ? '編輯選單項目' : '新增選單項目'}</DialogTitle>
         <DialogContent>
             <TextField autoFocus margin="dense" label="選單名稱" type="text" fullWidth variant="outlined" value={currentItem.name || ''} onChange={(e) => setCurrentItem(prev => ({ ...prev, name: e.target.value }))} sx={{mt: 2, mb: 2}} />
-            <TextField margin="dense" label="路徑 (e.g., /dashboard)" type="text" fullWidth variant="outlined" value={currentItem.path || ''} onChange={(e) => setCurrentItem(prev => ({ ...prev, path: e.target.value }))} sx={{mb: 2}} />
             
-            {/* ↓↓ 修正點：將 TextField 替換為 Select ↓↓ */}
+            {/* ↓↓ 新增「上層選單」的下拉選單 ↓↓ */}
+            <FormControl fullWidth margin="dense" sx={{mb: 2}}>
+              <InputLabel>上層選單</InputLabel>
+              <Select
+                value={currentItem.parentId || ''}
+                label="上層選單"
+                onChange={(e) => setCurrentItem(prev => ({ ...prev, parentId: e.target.value || null }))}
+              >
+                <MuiMenuItem value="">
+                  <em>(設為根選單)</em>
+                </MuiMenuItem>
+                {menuItems.map(item => (
+                  <RecursiveMenuItem key={item.id} item={item} depth={0} />
+                ))}
+              </Select>
+            </FormControl>
+
+            <TextField margin="dense" label="路徑 (e.g., /dashboard)" type="text" fullWidth variant="outlined" value={currentItem.path || ''} onChange={(e) => setCurrentItem(prev => ({ ...prev, path: e.target.value }))} sx={{mb: 2}} />
             <FormControl fullWidth margin="dense">
               <InputLabel>圖示</InputLabel>
               <Select
@@ -150,16 +185,15 @@ const MenuManagementPage = () => {
                 onChange={(e) => setCurrentItem(prev => ({ ...prev, icon: e.target.value }))}
               >
                 {availableIcons.map(iconName => (
-                  <MenuItem key={iconName} value={iconName}>
+                  <MuiMenuItem key={iconName} value={iconName}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <IconMapper iconName={iconName} />
                       <Typography sx={{ ml: 2 }}>{iconName}</Typography>
                     </Box>
-                  </MenuItem>
+                  </MuiMenuItem>
                 ))}
               </Select>
             </FormControl>
-
             <TextField margin="dense" label="排序" type="number" fullWidth variant="outlined" value={currentItem.sortOrder || 0} onChange={(e) => setCurrentItem(prev => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))} sx={{mt: 2}}/>
         </DialogContent>
         <DialogActions>

@@ -241,6 +241,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Core.Entities.RoleMenuPermission", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MenuItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RoleId", "MenuItemId");
+
+                    b.HasIndex("MenuItemId");
+
+                    b.ToTable("RoleMenuPermissions");
+                });
+
             modelBuilder.Entity("Core.Entities.SystemParameter", b =>
                 {
                     b.Property<Guid>("Id")
@@ -457,7 +472,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Parent");
@@ -470,10 +485,29 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("Core.Entities.RoleMenuPermission", b =>
+                {
+                    b.HasOne("Core.Entities.MenuItem", "MenuItem")
+                        .WithMany()
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MenuItem");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Core.Entities.SystemParameter", b =>

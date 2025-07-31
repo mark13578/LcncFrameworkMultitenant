@@ -114,5 +114,39 @@ namespace WebAPI.Controllers
 
             return NoContent();
         }
+
+        // --- ↓↓ 新增的權限管理端點 ↓↓ ---
+
+        // GET: api/roles/{roleId}/menu-permissions
+        [HttpGet("{roleId}/menu-permissions")]
+        public async Task<ActionResult<IEnumerable<Guid>>> GetMenuPermissions(Guid roleId)
+        {
+            var tenantId = GetTenantId();
+            var role = await _unitOfWork.Roles.GetByIdAsync(roleId);
+            if (role == null || role.TenantId != tenantId)
+            {
+                return NotFound("找不到指定的角色。");
+            }
+
+            var permissions = await _unitOfWork.Roles.GetMenuPermissionsAsync(roleId);
+            return Ok(permissions.Select(p => p.MenuItemId));
+        }
+
+        // PUT: api/roles/{roleId}/menu-permissions
+        [HttpPut("{roleId}/menu-permissions")]
+        public async Task<IActionResult> UpdateMenuPermissions(Guid roleId, [FromBody] List<Guid> menuItemIds)
+        {
+            var tenantId = GetTenantId();
+            var role = await _unitOfWork.Roles.GetByIdAsync(roleId);
+            if (role == null || role.TenantId != tenantId)
+            {
+                return NotFound("找不到指定的角色。");
+            }
+
+            _unitOfWork.Roles.UpdateMenuPermissions(roleId, menuItemIds);
+            await _unitOfWork.CompleteAsync();
+
+            return NoContent();
+        }
     }
 }

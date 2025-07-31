@@ -17,5 +17,8 @@ namespace Core.Interfaces
         void Update(Role role);
         void Remove(Role role);
         Task<bool> IsRoleInUseAsync(Guid roleId);
+        // 用於處理權限的更新
+        Task<IEnumerable<RoleMenuPermission>> GetMenuPermissionsAsync(Guid roleId);
+        void UpdateMenuPermissions(Guid roleId, IEnumerable<Guid> menuItemIds);
     }
 }

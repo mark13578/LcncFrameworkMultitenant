@@ -53,5 +53,27 @@ namespace Infrastructure.Repositories
             // 檢查是否有任何使用者正在使用這個角色
             return await _context.UserRoles.AnyAsync(ur => ur.RoleId == roleId);
         }
+
+        public async Task<IEnumerable<RoleMenuPermission>> GetMenuPermissionsAsync(Guid roleId)
+        {
+            return await _context.RoleMenuPermissions
+                .Where(p => p.RoleId == roleId)
+                .ToListAsync();
+        }
+
+        public void UpdateMenuPermissions(Guid roleId, IEnumerable<Guid> menuItemIds)
+        {
+            // 先刪除該角色所有舊的權限
+            var existingPermissions = _context.RoleMenuPermissions.Where(p => p.RoleId == roleId);
+            _context.RoleMenuPermissions.RemoveRange(existingPermissions);
+
+            // 再新增所有新的權限
+            var newPermissions = menuItemIds.Select(menuId => new RoleMenuPermission
+            {
+                RoleId = roleId,
+                MenuItemId = menuId
+            });
+            _context.RoleMenuPermissions.AddRange(newPermissions);
+        }
     }
 }

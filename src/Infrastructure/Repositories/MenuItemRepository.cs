@@ -21,5 +21,39 @@ namespace Infrastructure.Repositories
         public async Task AddAsync(MenuItem menuItem) => await _context.MenuItems.AddAsync(menuItem);
         public void Update(MenuItem menuItem) => _context.MenuItems.Update(menuItem);
         public void Remove(MenuItem menuItem) => _context.MenuItems.Remove(menuItem);
+
+        public async Task<IEnumerable<MenuItem>> GetAllowedByRoleIdsAsync(Guid tenantId, IEnumerable<Guid> roleIds)
+        {
+            // 找出這些角色被授權的所有 MenuItem 的 ID
+            var allowedMenuItemIds = await _context.RoleMenuPermissions
+                .Where(p => roleIds.Contains(p.RoleId))
+                .Select(p => p.MenuItemId)
+                .Distinct()
+                .ToListAsync();
+
+            // 找出所有租戶的選單，以便建構完整的樹
+            var allMenuItems = await _context.MenuItems
+                .Where(m => m.TenantId == tenantId)
+                .ToListAsync();
+
+            // 找出被授權的選單及其所有的父層選單
+            var requiredMenuItems = new HashSet<MenuItem>();
+            var queue = new Queue<MenuItem>(allMenuItems.Where(m => allowedMenuItemIds.Contains(m.Id)));
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                if (requiredMenuItems.Add(current) && current.ParentId != null)
+                {
+                    var parent = allMenuItems.FirstOrDefault(m => m.Id == current.ParentId);
+                    if (parent != null)
+                    {
+                        queue.Enqueue(parent);
+                    }
+                }
+            }
+
+            return requiredMenuItems.ToList();
+        }
     }
 }

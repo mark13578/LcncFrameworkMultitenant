@@ -29,7 +29,9 @@ namespace Infrastructure.Persistence
 
         public DbSet<Announcement> Announcements { get; set; }  // 公告管理
 
-        public DbSet<Translation> Translations { get; set; }
+        public DbSet<Translation> Translations { get; set; }    // 多國語言
+
+        public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }  // 角色選單權限
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -88,6 +90,36 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<Translation>()
                 .HasIndex(t => new { t.TenantId, t.LanguageCode, t.Key })
                 .IsUnique();
+
+            // ↓↓ 為 RoleMenuPermission 建立複合主鍵和關聯 ↓↓
+            modelBuilder.Entity<RoleMenuPermission>()
+                .HasKey(p => new { p.RoleId, p.MenuItemId });
+
+            modelBuilder.Entity<RoleMenuPermission>()
+                .HasOne(p => p.Role)
+                .WithMany() // 我們暫時不需要從 Role 反向導覽到權限
+                .HasForeignKey(p => p.RoleId)
+                .OnDelete(DeleteBehavior.Cascade); // 當角色被刪除時，直接刪除對應的權限紀錄
+
+            modelBuilder.Entity<RoleMenuPermission>()
+                .HasOne(p => p.MenuItem)
+                .WithMany() // 暫時不需要從 MenuItem 反向導覽
+                .HasForeignKey(p => p.MenuItemId)
+                .OnDelete(DeleteBehavior.Cascade); // 關鍵！打破連鎖路徑
+
+            // ↓↓ 關鍵修正點：切斷從 Tenant -> Role 和 Tenant -> MenuItem 的連鎖刪除 ↓↓
+            // 這樣可以避免多重路徑問題，因為刪除 Tenant 不會再自動級聯到 Role 和 MenuItem
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.Tenant)
+                .WithMany() // 我們不從 Tenant 導覽回 Role
+                .HasForeignKey(r => r.TenantId)
+                .OnDelete(DeleteBehavior.Restrict); // 如果租戶下還有角色，則不允許刪除租戶
+
+            modelBuilder.Entity<MenuItem>()
+                .HasOne(m => m.Tenant)
+                .WithMany() // 我們不從 Tenant 導覽回 MenuItem
+                .HasForeignKey(m => m.TenantId)
+                .OnDelete(DeleteBehavior.Restrict); // 如果租戶下還有選單，則不允許刪除租戶
         }
     }
 }

@@ -16,5 +16,7 @@ namespace Core.Interfaces
         Task AddAsync(MenuItem menuItem);
         void Update(MenuItem menuItem);
         void Remove(MenuItem menuItem);
+        Task<IEnumerable<MenuItem>> GetAllowedByRoleIdsAsync(Guid tenantId, IEnumerable<Guid> roleIds);
+
     }
 }

@@ -114,7 +114,16 @@ using (var scope = app.Services.CreateScope())
         var defaultDept = new Department { Name = "General Department", Tenant = defaultTenant };
         context.Departments.Add(defaultDept);
 
-        // 3. 建立一個屬於該租戶和部門的 admin 使用者
+        // 3. 在該租戶下，建立一個預設的「系統管理員」角色
+        var adminRole = new Role
+        {
+            Name = "System Administrator",
+            Description = "擁有系統所有權限的管理員",
+            TenantId = defaultTenant.Id
+        };
+        context.Roles.Add(adminRole);
+
+        // 4. 建立一個屬於該租戶和部門的 admin 使用者
         var adminUser = new User
         {
             Username = "admin",
@@ -124,8 +133,12 @@ using (var scope = app.Services.CreateScope())
             Tenant = defaultTenant,      // 使用新的 Tenant 屬性
             Department = defaultDept   // 使用新的 Department 屬性
         };
-        context.Users.Add(adminUser);
 
+        // 5. 建立使用者與角色的關聯
+        var userRole = new UserRole { User = adminUser, Role = adminRole };
+        context.UserRoles.Add(userRole);
+
+        context.Users.Add(adminUser);
         context.SaveChanges();
     }
 }
