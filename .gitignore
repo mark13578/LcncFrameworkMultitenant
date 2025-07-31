@@ -1,0 +1,80 @@
+# ===================================================================
+# 通用規則 (作業系統、IDE、通用工具)
+# ===================================================================
+
+# 作業系統產生的檔案
+.DS_Store
+Thumbs.db
+
+# Log 檔案
+*.log
+logs/
+
+# IDE 與編輯器設定
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.user
+*.sln.docstates
+
+# 本機環境變數檔案 (儲存敏感資訊)
+.env
+.env.local
+.env.*.local
+
+# ===================================================================
+# .NET 後端專區 (Backend - dotnet)
+# ===================================================================
+
+# 編譯輸出檔案
+[Bb]in/
+[Oo]bj/
+
+# 發布檔案
+[Pp]ublish/
+[Rr]elease/
+
+# 使用者特定的 Visual Studio 檔案
+*.csproj.user
+
+# Rider files
+.idea/
+*.sln.iml
+
+# 套件
+packages/
+*.nupkg
+
+# 測試報告與覆蓋率
+test-results/
+*.opencover.xml
+coverage.cobertura.xml
+
+# appsettings 的本地開發設定 (可能包含本地資料庫密碼)
+appsettings.Development.json
+
+# ===================================================================
+# Node.js 前端專區 (Frontend - React/Vite)
+# ===================================================================
+
+# 依賴套件 (最重要的規則！)
+node_modules/
+
+# Vite/React 產生的檔案
+dist/
+.vite/
+coverage/
+
+# Debug log 檔案
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 編輯器暫存檔
+.pnp/
+.pnp.js
