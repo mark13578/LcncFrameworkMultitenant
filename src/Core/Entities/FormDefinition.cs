@@ -17,6 +17,10 @@ namespace Core.Entities
         // 這個表單對應的真實資料儲存表名稱
         public required string UserDataTableName { get; set; }
 
+        // 關鍵：標示表單定義屬於哪個租戶
+        public Guid TenantId { get; set; }
+        public Tenant Tenant { get; set; } // 導覽屬性可選
+
         public ICollection<FieldDefinition> Fields { get; set; } = new List<FieldDefinition>();
     }
 }

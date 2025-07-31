@@ -7,6 +7,7 @@ using Infrastructure.Services; // 引用
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Core.Interfaces;
+using System.Linq;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,22 +99,33 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
-    // 如果 Users 資料表是空的
-    if (!context.Users.Any())
-    {
-        var defaultOrg = new Organization { Name = "Default Corp" };
-        context.Organizations.Add(defaultOrg);
 
+    // 確保資料庫已建立
+    context.Database.EnsureCreated();
+
+    // 檢查是否已有任何租戶，如果沒有，才建立預設資料
+    if (!context.Tenants.Any())
+    {
+        // 1. 建立一個預設的「租戶 (Tenant)」
+        var defaultTenant = new Tenant { Name = "Default Tenant" };
+        context.Tenants.Add(defaultTenant);
+
+        // 2. 在該租戶下，建立一個預設的「部門 (Department)」
+        var defaultDept = new Department { Name = "General Department", Tenant = defaultTenant };
+        context.Departments.Add(defaultDept);
+
+        // 3. 建立一個屬於該租戶和部門的 admin 使用者
         var adminUser = new User
         {
             Username = "admin",
-            // 重要：儲存雜湊後的密碼
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
             Email = "admin@lcnc.dev",
             IsActive = true,
-            Organization = defaultOrg
+            Tenant = defaultTenant,      // 使用新的 Tenant 屬性
+            Department = defaultDept   // 使用新的 Department 屬性
         };
         context.Users.Add(adminUser);
+
         context.SaveChanges();
     }
 }

@@ -13,7 +13,11 @@ namespace Core.Interfaces
     {
         // 將來有新的實體，就在這裡加入新的 Repository
         IUserRepository Users { get; }
+        // 動態表格元件
         IFormDefinitionRepository FormDefinitions { get; }
+
+        // 部門管理元件
+        IDepartmentRepository Departments { get; }
         Task<int> CompleteAsync();
 
 

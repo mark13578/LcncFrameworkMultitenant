@@ -14,8 +14,12 @@ namespace Core.Entities
         public string? Email { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public Guid OrganizationId { get; set; }
-        public Organization? Organization { get; set; }
+        // 關鍵：標示使用者屬於哪個租戶
+        public Guid TenantId { get; set; }
+        public Tenant? Tenant { get; set; }
+
+        public Guid DepartmentId { get; set; }
+        public Department? Department { get; set; }
 
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }

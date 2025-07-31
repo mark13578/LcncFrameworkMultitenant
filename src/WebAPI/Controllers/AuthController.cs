@@ -68,6 +68,8 @@ namespace WebAPI.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                // 加入TenantID
+                new Claim("tenantId", user.TenantId.ToString())
             };
 
             var token = new JwtSecurityToken(

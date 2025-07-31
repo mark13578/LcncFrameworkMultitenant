@@ -8,6 +8,7 @@ import FormViewerPage from '../pages/FormViewerPage';
 // <-- 引用 FormViewerPage，這是用於顯示表單的頁面
 import FormBuilderPage from '../pages/FormBuilderPage'; 
 // 引用 FormBuilderPage，這是用於表單編輯的頁面
+import DepartmentManagementPage from '../pages/DepartmentManagementPage';
 
 
 const router = createBrowserRouter([
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <FormBuilderPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/management/departments',
+    element: (
+      <ProtectedRoute>
+        <DepartmentManagementPage />
       </ProtectedRoute>
     ),
   },

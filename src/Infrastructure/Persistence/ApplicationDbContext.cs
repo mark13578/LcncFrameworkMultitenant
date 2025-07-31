@@ -19,11 +19,11 @@ namespace Infrastructure.Persistence
         // 為 Core 專案中定義的每個實體建立 DbSet
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<FormDefinition> FormDefinitions { get; set; }
         public DbSet<FieldDefinition> FieldDefinitions { get; set; }
-
+        public DbSet<Department> Departments { get; set; } // 新增 Departments
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,12 +45,28 @@ namespace Infrastructure.Persistence
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
 
-            // 設定 Organization 的自參考關係 (父子組織)
-            modelBuilder.Entity<Organization>()
-                .HasOne(o => o.Parent)
-                .WithMany(o => o.Children)
-                .HasForeignKey(o => o.ParentId)
-                .OnDelete(DeleteBehavior.Restrict); // 避免連鎖刪除
+
+            // Department 的階層關聯設定 (應保留)
+            // 這段邏輯才是正確使用您貼出程式碼的地方
+            modelBuilder.Entity<Department>()
+                .HasOne(d => d.Parent)
+                .WithMany(d => d.Children)
+                .HasForeignKey(d => d.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 設定 User 與 Tenant 的關聯
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Tenant)
+                .WithMany(t => t.Users)
+                .HasForeignKey(u => u.TenantId)
+                .OnDelete(DeleteBehavior.Restrict); // 當 Tenant 被刪除時，如果底下還有 User，則阻止刪除
+
+            // 設定 User 與 Department 的關聯
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Department)
+                .WithMany(d => d.Users)
+                .HasForeignKey(u => u.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict); // 當 Department 被刪除時，如果底下還有 User，則阻止刪除 (這裡也可以設定為 NoAction)
         }
     }
 }
