@@ -24,6 +24,8 @@ namespace Core.Interfaces
         IMenuItemRepository MenuItems { get; } // 框架畫面的選單
 
         ISystemParameterRepository SystemParameters { get; }    // 系統參數
+
+        IAnnouncementRepository Announcements { get; }  // 公告管理
         Task<int> CompleteAsync();
 
 

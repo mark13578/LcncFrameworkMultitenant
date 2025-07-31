@@ -21,15 +21,18 @@ namespace Infrastructure.Persistence
         public IMenuItemRepository MenuItems { get; private set; } // 網頁核心選單
 
         public ISystemParameterRepository SystemParameters { get; private set; }    // 系統參數
+
+        public IAnnouncementRepository Announcements { get; private set; }  // 公告管理
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
             FormDefinitions = new FormDefinitionRepository(_context); // 初始化動態表單物件
-            Departments = new DepartmentRepository(context); // 初始化部門物件
-            Roles = new RoleRepository(context);
-            MenuItems = new MenuItemRepository(context);
-            SystemParameters = new SystemParameterRepository(context);
+            Departments = new DepartmentRepository(_context); // 初始化部門物件
+            Roles = new RoleRepository(_context);
+            MenuItems = new MenuItemRepository(_context);
+            SystemParameters = new SystemParameterRepository(_context);
+            Announcements = new AnnouncementRepository(_context);
         }
 
         public async Task<int> CompleteAsync()

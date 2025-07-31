@@ -25,7 +25,9 @@ namespace Infrastructure.Persistence
         public DbSet<FieldDefinition> FieldDefinitions { get; set; }
         public DbSet<Department> Departments { get; set; } // 新增 Departments
         public DbSet<MenuItem> MenuItems { get; set; } // 驅動網頁選單SQL表
-        public DbSet<SystemParameter> SystemParameters { get; set; }
+        public DbSet<SystemParameter> SystemParameters { get; set; } // 系統參數與字典管理
+
+        public DbSet<Announcement> Announcements { get; set; }  // 公告管理
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

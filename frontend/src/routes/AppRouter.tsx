@@ -19,6 +19,7 @@ import MainLayout from '../components/layout/MainLayout';
 import DictionaryManagementPage from '../pages/DictionaryManagementPage';
 // 系統參數設置
 import ParameterSettingsPage from '../pages/ParameterSettingsPage';
+import AnnouncementManagementPage from '../pages/AnnouncementManagementPage';
 
 
 const router = createBrowserRouter([
@@ -66,8 +67,11 @@ const router = createBrowserRouter([
       {
         path: '/management/dictionaries',
         element: <DictionaryManagementPage />,
-      }
-
+      },
+      {
+        path: '/management/announcements',
+        element: <AnnouncementManagementPage />,
+      },
     ],
   },
   {
