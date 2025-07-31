@@ -22,6 +22,8 @@ namespace Core.Interfaces
         IRoleRepository Roles { get; }  // 角色管理
 
         IMenuItemRepository MenuItems { get; } // 框架畫面的選單
+
+        ISystemParameterRepository SystemParameters { get; }    // 系統參數
         Task<int> CompleteAsync();
 
 

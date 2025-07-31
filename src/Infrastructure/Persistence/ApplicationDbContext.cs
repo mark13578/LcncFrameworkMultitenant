@@ -25,7 +25,7 @@ namespace Infrastructure.Persistence
         public DbSet<FieldDefinition> FieldDefinitions { get; set; }
         public DbSet<Department> Departments { get; set; } // 新增 Departments
         public DbSet<MenuItem> MenuItems { get; set; } // 驅動網頁選單SQL表
-
+        public DbSet<SystemParameter> SystemParameters { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,6 +75,10 @@ namespace Infrastructure.Persistence
                .WithMany(m => m.Children)
                .HasForeignKey(m => m.ParentId)
                .OnDelete(DeleteBehavior.Restrict); // 不允許刪除仍有子選單的項目
+
+            modelBuilder.Entity<SystemParameter>()
+                .HasIndex(p => new { p.TenantId, p.Category, p.Key })
+                .IsUnique();
         }
     }
 }

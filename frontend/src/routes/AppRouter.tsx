@@ -15,6 +15,10 @@ import RoleManagementPage from '../pages/RoleManagementPage';
 import UserManagementPage from '../pages/UserManagementPage';
 import MenuManagementPage from '../pages/MenuManagementPage';
 import MainLayout from '../components/layout/MainLayout';
+// 字典管理
+import DictionaryManagementPage from '../pages/DictionaryManagementPage';
+// 系統參數設置
+import ParameterSettingsPage from '../pages/ParameterSettingsPage';
 
 
 const router = createBrowserRouter([
@@ -59,7 +63,28 @@ const router = createBrowserRouter([
         path: 'management/menus',
         element: <MenuManagementPage />,
       },
+      {
+        path: '/management/dictionaries',
+        element: <DictionaryManagementPage />,
+      }
+
     ],
+  },
+  {
+    path: '/management/dictionaries',
+    element: (
+      <ProtectedRoute>
+        <DictionaryManagementPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/management/parameters',
+    element: (
+      <ProtectedRoute>
+        <ParameterSettingsPage />
+      </ProtectedRoute>
+    ),
   },
   
 
