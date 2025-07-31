@@ -12,7 +12,7 @@ namespace WebAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class FormDefinitionsController : ControllerBase
+    public class FormDefinitionsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDynamicTableManager _tableManager;
@@ -120,6 +120,16 @@ namespace WebAPI.Controllers
                     ConfigurationJson = f.ConfigurationJson
                 }).ToList()
             };
+        }
+
+        // GET: api/formdefinitions
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FormDefinitionResponseDto>>> GetFormDefinitions()
+        {
+            var tenantId = GetTenantId();
+            var forms = await _unitOfWork.FormDefinitions.GetAllByTenantAsync(tenantId);
+            var dtos = forms.Select(MapToResponseDto); // 重用我們的映射方法
+            return Ok(dtos);
         }
     }
 }

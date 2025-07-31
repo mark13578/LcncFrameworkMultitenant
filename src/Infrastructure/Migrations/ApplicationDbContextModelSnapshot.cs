@@ -132,6 +132,47 @@ namespace Infrastructure.Migrations
                     b.ToTable("FormDefinitions");
                 });
 
+            modelBuilder.Entity("Core.Entities.MenuItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("UpdatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("MenuItems");
+                });
+
             modelBuilder.Entity("Core.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -278,6 +319,24 @@ namespace Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("Core.Entities.MenuItem", b =>
+                {
+                    b.HasOne("Core.Entities.MenuItem", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("Core.Entities.Role", b =>
                 {
                     b.HasOne("Core.Entities.Tenant", "Tenant")
@@ -337,6 +396,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.FormDefinition", b =>
                 {
                     b.Navigation("Fields");
+                });
+
+            modelBuilder.Entity("Core.Entities.MenuItem", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Core.Entities.Role", b =>

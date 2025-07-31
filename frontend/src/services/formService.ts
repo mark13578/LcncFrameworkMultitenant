@@ -58,6 +58,11 @@ class FormService {
     const response = await api.post<FormDefinitionResponseDto>('/formdefinitions', formData);
     return response.data;
   }
+
+  async getFormDefinitions(): Promise<FormDefinitionResponseDto[]> {
+    const response = await api.get<FormDefinitionResponseDto[]>('/formdefinitions');
+    return response.data;
+  }
 }
 
 

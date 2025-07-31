@@ -17,6 +17,8 @@ namespace Infrastructure.Persistence
         public IFormDefinitionRepository FormDefinitions { get; private set; } // 表單屬性
         public IDepartmentRepository Departments { get; private set; } // 部門管理屬性
         public IRoleRepository Roles { get; private set; }
+
+        public IMenuItemRepository MenuItems { get; private set; } // 網頁核心選單
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -24,6 +26,7 @@ namespace Infrastructure.Persistence
             FormDefinitions = new FormDefinitionRepository(_context); // 初始化動態表單物件
             Departments = new DepartmentRepository(context); // 初始化部門物件
             Roles = new RoleRepository(context);
+            MenuItems = new MenuItemRepository(context);
         }
 
         public async Task<int> CompleteAsync()

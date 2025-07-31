@@ -24,6 +24,8 @@ namespace Infrastructure.Persistence
         public DbSet<FormDefinition> FormDefinitions { get; set; }
         public DbSet<FieldDefinition> FieldDefinitions { get; set; }
         public DbSet<Department> Departments { get; set; } // 新增 Departments
+        public DbSet<MenuItem> MenuItems { get; set; } // 驅動網頁選單SQL表
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,6 +69,12 @@ namespace Infrastructure.Persistence
                 .WithMany(d => d.Users)
                 .HasForeignKey(u => u.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict); // 當 Department 被刪除時，如果底下還有 User，則阻止刪除 (這裡也可以設定為 NoAction)
+
+            modelBuilder.Entity<MenuItem>()
+               .HasOne(m => m.Parent)
+               .WithMany(m => m.Children)
+               .HasForeignKey(m => m.ParentId)
+               .OnDelete(DeleteBehavior.Restrict); // 不允許刪除仍有子選單的項目
         }
     }
 }

@@ -13,6 +13,8 @@ import DepartmentManagementPage from '../pages/DepartmentManagementPage';
 import RoleManagementPage from '../pages/RoleManagementPage';
 // 引用 UserManagementPage，這是用於使用者管理的頁面
 import UserManagementPage from '../pages/UserManagementPage';
+import MenuManagementPage from '../pages/MenuManagementPage';
+import MainLayout from '../components/layout/MainLayout';
 
 
 const router = createBrowserRouter([
@@ -25,50 +27,41 @@ const router = createBrowserRouter([
     // ↓↓ 修改這裡，將 DashboardPage 包起來 ↓↓
     element: (
       <ProtectedRoute>
-        <DashboardPage />
+        <MainLayout />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        index: true, // index: true 代表這是 '/' 的預設子路由
+        element: <DashboardPage />,
+      },
+      {
+        path: 'builder',
+        element: <FormBuilderPage />,
+      },
+      {
+        path: 'forms/:formName',
+        element: <FormViewerPage />,
+      },
+      {
+        path: 'management/departments',
+        element: <DepartmentManagementPage />,
+      },
+      {
+        path: 'management/roles',
+        element: <RoleManagementPage />,
+      },
+      {
+        path: 'management/users',
+        element: <UserManagementPage />,
+      },
+      {
+        path: 'management/menus',
+        element: <MenuManagementPage />,
+      },
+    ],
   },
-  {
-    path: '/forms/:formName', // :formName 是一個動態參數
-    element: (
-      <ProtectedRoute>
-        <FormViewerPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/builder',
-    element: (
-      <ProtectedRoute>
-        <FormBuilderPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/management/departments',
-    element: (
-      <ProtectedRoute>
-        <DepartmentManagementPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/management/roles',
-    element: (
-      <ProtectedRoute>
-        <RoleManagementPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/management/users',
-    element: (
-      <ProtectedRoute>
-        <UserManagementPage />
-      </ProtectedRoute>
-    ),
-  },
+  
 
 ]);
 

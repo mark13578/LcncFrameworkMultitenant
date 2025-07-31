@@ -12,7 +12,10 @@ namespace Core.Interfaces
     public interface IFormDefinitionRepository
     {
         Task<FormDefinition?> GetByIdWithFieldsAsync(Guid id);
-        Task AddAsync(FormDefinition formDefinition);
         Task<FormDefinition?> GetByNameAsync(string name);
+
+        Task<IEnumerable<FormDefinition>> GetAllByTenantAsync(Guid tenantId); // <-- 加入這行
+        Task AddAsync(FormDefinition formDefinition);
+
     }
 }

@@ -33,5 +33,12 @@ namespace Infrastructure.Repositories
                 .Include(f => f.Fields)
                 .FirstOrDefaultAsync(f => f.Name == name);
         }
+
+        public async Task<IEnumerable<FormDefinition>> GetAllByTenantAsync(Guid tenantId) // <-- 加入這個方法
+        {
+            return await _context.FormDefinitions
+                .Where(f => f.TenantId == tenantId)
+                .ToListAsync();
+        }
     }
 }
