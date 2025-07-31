@@ -18,6 +18,8 @@ namespace Core.Interfaces
 
         // 部門管理元件
         IDepartmentRepository Departments { get; }
+
+        IRoleRepository Roles { get; }
         Task<int> CompleteAsync();
 
 

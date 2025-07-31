@@ -31,6 +31,21 @@ namespace WebAPI.Controllers
             }
 
             return Guid.Parse(tenantIdClaim.Value);
+
+
+        }
+
+        // ↓↓ 新增這個輔助方法 ↓↓
+        protected Guid GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+            {
+                throw new InvalidOperationException("無法從 JWT Token 中解析 UserId。");
+            }
+
+            return userId;
         }
     }
 }

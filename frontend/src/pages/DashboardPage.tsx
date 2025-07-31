@@ -57,6 +57,13 @@ const DashboardPage = () => {
       <Button component={RouterLink} to="/management/departments" variant="outlined" sx={{ mt: 2, mr: 2 }}>
         部門管理
       </Button>
+      {/* ↓↓ 加入前往角色管理的連結按鈕 ↓↓ */}
+      <Button component={RouterLink} to="/management/roles" variant="outlined" sx={{ mt: 2, mr: 2 }}>
+        角色管理
+      </Button>
+      <Button component={RouterLink} to="/management/users" variant="outlined" sx={{ mt: 2, mr: 2 }}>
+        使用者管理
+      </Button>
       <Button variant="contained" onClick={handleLogout} sx={{ mt: 2 }}>
         登出
       </Button>

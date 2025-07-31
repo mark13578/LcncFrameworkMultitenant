@@ -19,7 +19,7 @@ namespace Core.Entities
 
         // 關鍵：標示表單定義屬於哪個租戶
         public Guid TenantId { get; set; }
-        public Tenant Tenant { get; set; } // 導覽屬性可選
+        public Tenant? Tenant { get; set; } // 導覽屬性可選
 
         public ICollection<FieldDefinition> Fields { get; set; } = new List<FieldDefinition>();
     }

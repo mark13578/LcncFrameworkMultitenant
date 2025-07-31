@@ -14,7 +14,7 @@ namespace Core.Entities
 
         // 關鍵：標示角色屬於哪個租戶
         public Guid TenantId { get; set; }
-        public Tenant Tenant { get; set; } // 導覽屬性可選
+        public Tenant? Tenant { get; set; } // 導覽屬性可選
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

@@ -16,13 +16,14 @@ namespace Infrastructure.Persistence
         public IUserRepository Users { get; private set; }
         public IFormDefinitionRepository FormDefinitions { get; private set; } // 表單屬性
         public IDepartmentRepository Departments { get; private set; } // 部門管理屬性
-
+        public IRoleRepository Roles { get; private set; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
             FormDefinitions = new FormDefinitionRepository(_context); // 初始化動態表單物件
             Departments = new DepartmentRepository(context); // 初始化部門物件
+            Roles = new RoleRepository(context);
         }
 
         public async Task<int> CompleteAsync()

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers
 {
     [Authorize]
-    public class DepartmentsController : BaseApiController // 繼承 BaseApiController
+    public class DepartmentsController : BaseApiController    // 繼承 BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
 

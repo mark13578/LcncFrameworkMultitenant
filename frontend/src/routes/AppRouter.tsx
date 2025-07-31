@@ -9,6 +9,10 @@ import FormViewerPage from '../pages/FormViewerPage';
 import FormBuilderPage from '../pages/FormBuilderPage'; 
 // 引用 FormBuilderPage，這是用於表單編輯的頁面
 import DepartmentManagementPage from '../pages/DepartmentManagementPage';
+// 引用 RoleManagementPage，這是用於角色管理的頁面
+import RoleManagementPage from '../pages/RoleManagementPage';
+// 引用 UserManagementPage，這是用於使用者管理的頁面
+import UserManagementPage from '../pages/UserManagementPage';
 
 
 const router = createBrowserRouter([
@@ -46,6 +50,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <DepartmentManagementPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/management/roles',
+    element: (
+      <ProtectedRoute>
+        <RoleManagementPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/management/users',
+    element: (
+      <ProtectedRoute>
+        <UserManagementPage />
       </ProtectedRoute>
     ),
   },
