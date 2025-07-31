@@ -1,4 +1,5 @@
 // src/pages/DashboardPage.tsx
+import { useTranslation } from 'react-i18next'; // <-- 引用 useTranslation Hook
 import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Alert, List, ListItem, ListItemButton, ListItemText, Divider, Paper } from '@mui/material';
@@ -9,6 +10,7 @@ const DashboardPage = () => {
   const [forms, setForms] = useState<FormDefinitionResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { t } = useTranslation(); // <-- 使用 useTranslation Hook 來獲取翻譯函數
 
   useEffect(() => {
     formService.getFormDefinitions()
@@ -26,7 +28,7 @@ const DashboardPage = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        主控台
+        {t('dashboard.title')}
       </Typography>
       <Typography variant="body1" color="textSecondary">
         歡迎使用您的 Low-Code 框架。您可以從下方選擇一個已建立的表單來開始使用，或前往管理後台進行設定。

@@ -23,16 +23,19 @@ namespace Infrastructure.Persistence
         public ISystemParameterRepository SystemParameters { get; private set; }    // 系統參數
 
         public IAnnouncementRepository Announcements { get; private set; }  // 公告管理
+
+        public ITranslationRepository Translations { get; private set; }    // 多國語言
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
             FormDefinitions = new FormDefinitionRepository(_context); // 初始化動態表單物件
             Departments = new DepartmentRepository(_context); // 初始化部門物件
-            Roles = new RoleRepository(_context);
-            MenuItems = new MenuItemRepository(_context);
-            SystemParameters = new SystemParameterRepository(_context);
-            Announcements = new AnnouncementRepository(_context);
+            Roles = new RoleRepository(_context);   // 初始化角色
+            MenuItems = new MenuItemRepository(_context);   // 初始化程式選單
+            SystemParameters = new SystemParameterRepository(_context); // 初始化系統參數與字典
+            Announcements = new AnnouncementRepository(_context);   // 初始化公告
+            Translations = new TranslationRepository(_context); // 初始化 系統多國語言
         }
 
         public async Task<int> CompleteAsync()

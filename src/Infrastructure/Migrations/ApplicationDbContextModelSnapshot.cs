@@ -305,6 +305,41 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tenants");
                 });
 
+            modelBuilder.Entity("Core.Entities.Translation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("UpdatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "LanguageCode", "Key")
+                        .IsUnique();
+
+                    b.ToTable("Translations");
+                });
+
             modelBuilder.Entity("Core.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -442,6 +477,17 @@ namespace Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Core.Entities.SystemParameter", b =>
+                {
+                    b.HasOne("Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("Core.Entities.Translation", b =>
                 {
                     b.HasOne("Core.Entities.Tenant", "Tenant")
                         .WithMany()

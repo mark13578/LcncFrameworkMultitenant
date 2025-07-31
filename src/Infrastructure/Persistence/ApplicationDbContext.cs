@@ -29,6 +29,8 @@ namespace Infrastructure.Persistence
 
         public DbSet<Announcement> Announcements { get; set; }  // 公告管理
 
+        public DbSet<Translation> Translations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -80,6 +82,11 @@ namespace Infrastructure.Persistence
 
             modelBuilder.Entity<SystemParameter>()
                 .HasIndex(p => new { p.TenantId, p.Category, p.Key })
+                .IsUnique();
+
+            // 新增多國語言
+            modelBuilder.Entity<Translation>()
+                .HasIndex(t => new { t.TenantId, t.LanguageCode, t.Key })
                 .IsUnique();
         }
     }

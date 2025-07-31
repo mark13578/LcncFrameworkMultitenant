@@ -26,6 +26,8 @@ namespace Core.Interfaces
         ISystemParameterRepository SystemParameters { get; }    // 系統參數
 
         IAnnouncementRepository Announcements { get; }  // 公告管理
+
+        ITranslationRepository Translations { get; }    // 多國語言
         Task<int> CompleteAsync();
 
 
