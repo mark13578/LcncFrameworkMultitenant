@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace Application.Dtos
         public required string Name { get; set; }
         public required string DisplayName { get; set; }
         public string? Description { get; set; }
+
+        
         public required List<CreateFieldDto> Fields { get; set; }
     }
 }

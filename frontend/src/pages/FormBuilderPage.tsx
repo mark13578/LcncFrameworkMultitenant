@@ -16,7 +16,8 @@ const PALETTE_COMPONENTS = [
   { id: 'palette-textfield', type: FieldType.TextField, label: '文字欄位' },
   { id: 'palette-numberfield', type: FieldType.NumberField, label: '數字欄位' },
   { id: 'palette-datepicker', type: FieldType.DatePicker, label: '日期選擇' },
-];
+  { id: 'palette-checkbox', type: FieldType.Checkbox, label: '勾選框' },
+  { id: 'palette-dropdown', type: FieldType.Dropdown, label: '下拉選單' },];
 
 const generateFieldName = (label: string) => {
   return label.trim().toLowerCase().replace(/\s+/g, '_');

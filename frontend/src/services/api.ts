@@ -3,7 +3,7 @@ import axios from 'axios';
 import authService from './authService'; // 引用 authService 以便取得 token
 
 // 請將 5036 替換成您後端 API 實際的 port 號
-const API_BASE_URL = 'http://localhost:5036/api';
+const API_BASE_URL = 'https://localhost:44363/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

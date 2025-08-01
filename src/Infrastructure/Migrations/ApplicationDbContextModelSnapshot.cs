@@ -95,7 +95,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.FieldDefinition", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConfigurationJson")
@@ -128,8 +127,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FormDefinitionId");
 
                     b.ToTable("FieldDefinitions");
                 });
@@ -444,8 +441,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Entities.FormDefinition", "FormDefinition")
                         .WithMany("Fields")
-                        .HasForeignKey("FormDefinitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("FormDefinition");

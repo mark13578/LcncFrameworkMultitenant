@@ -43,6 +43,7 @@ namespace WebAPI.Controllers
                 Description = requestDto.Description,
                 // 2. 在這裡設定對應的實體資料表名稱
                 UserDataTableName = $"UserData_{requestDto.Name}",
+                
                 Fields = requestDto.Fields.Select(fieldDto => new FieldDefinition
                 {
                     Name = fieldDto.Name,

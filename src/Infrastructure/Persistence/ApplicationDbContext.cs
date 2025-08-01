@@ -62,6 +62,13 @@ namespace Infrastructure.Persistence
                 .HasForeignKey(d => d.ParentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // 設定 FormDefinition 與 FieldDefinition 之間的關係
+            modelBuilder.Entity<FieldDefinition>()
+                .HasOne(f => f.FormDefinition)
+                .WithMany(f => f.Fields)
+                .HasForeignKey(f => f.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // 設定 User 與 Tenant 的關聯
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Tenant)
